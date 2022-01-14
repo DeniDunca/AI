@@ -1,0 +1,78 @@
+% Saved by Prover9-Mace4 Version 0.5, December 2007.
+
+set(ignore_option_dependencies). % GUI handles dependencies
+
+if(Prover9). % Options for Prover9
+  assign(max_seconds, 60).
+end_if.
+
+if(Mace4).   % Options for Mace4
+  assign(max_models, 2).
+  assign(max_seconds, 60).
+end_if.
+
+if(Prover9). % Additional input for Prover9
+% diurn: tot ce crede cat timp e treaz e adevarat; tot ce crede cat timp doarme e fals
+% nocturn: tot ce crede cat timp e treaz e fals; tot ce crede cat timp doarme e adevarat
+% dirunal, nocturnal, asleep, awake
+% Mr. Kulp = H; Mrs. Kulp = W
+end_if.
+
+formulas(assumptions).
+
+%fiecare dintre A, B si C pot fi true, false sau spy
+a_true | a_false | a_spy.
+b_true | b_false | b_spy.
+c_true | c_false | c_spy.
+
+%trebuie sa fie doar de un singur tip
+a_true -> -a_false & -a_spy.
+a_false -> -a_true & -a_spy.
+a_spy -> -a_true & -a_false.
+
+b_true -> -b_false & -b_spy.
+b_false -> -b_true & -b_spy.
+b_spy -> -b_true & -b_false.
+
+c_true -> -c_false & -c_spy.
+c_false -> -c_true & -c_spy.
+c_spy -> -c_true & -c_false.
+
+%doar unul poate sa fie adevarat
+%doar unul poate sa fie fals
+%doar unul poate sa fie spion
+a_true -> -b_true & -c_true.
+a_false -> -b_false & -c_false.
+a_spy -> -b_spy & -c_spy.
+
+b_true -> -a_true & -c_true.
+b_false -> -a_false & -c_false.
+b_spy -> -a_spy & -c_spy.
+
+c_true -> -a_true & -b_true.
+c_false -> -a_false & -b_false.
+c_spy -> -a_spy & -b_spy.
+
+%ceea ce ne zice A despre ceilalti
+a_true -> c_false | c_spy.
+a_false -> -c_false & -c_spy.
+a_spy -> (c_false | c_spy) | (-c_false & -c_spy).
+
+%ceea ce ne zice B despre ceilalti
+b_true -> a_true | a_false | a_spy.
+b_false -> -a_true & -a_false & -a_spy.
+b_spy -> (a_true | a_false | a_spy) | (-a_true & -a_false & -a_spy).
+
+%ceea ce ne zice C despre ceilalti
+c_true -> b_true | b_false | b_spy.
+c_false -> -b_true & -b_false & -b_spy.
+c_spy -> (b_true | b_false | b_spy) | (-b_true & -b_false & -a_spy).
+
+end_of_list.
+
+formulas(goals).
+
+% b este spion
+
+end_of_list.
+

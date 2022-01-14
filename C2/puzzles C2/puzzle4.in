@@ -1,0 +1,53 @@
+% Saved by Prover9-Mace4 Version 0.5, December 2007.
+
+set(ignore_option_dependencies). % GUI handles dependencies
+
+if(Prover9). % Options for Prover9
+  assign(max_seconds, 60).
+end_if.
+
+if(Mace4).   % Options for Mace4
+  assign(max_models, 2).
+  assign(max_seconds, 60).
+end_if.
+
+if(Prover9). % Additional input for Prover9
+% diurn: tot ce crede cat timp e treaz e adevarat; tot ce crede cat timp doarme e fals
+% nocturn: tot ce crede cat timp e treaz e fals; tot ce crede cat timp doarme e adevarat
+% dirunal, nocturnal, asleep, awake
+% Mr. Kulp = H; Mrs. Kulp = W
+end_if.
+
+formulas(assumptions).
+
+%fieacare dintre cei doi este sane sau insane
+%doctor sau patient
+a_sane | a_insane.
+a_doctor | a_patient.
+b_sane | b_insane.
+b_doctor | b_patient.
+
+%trebuie sa fie de un singur tip fiecare
+a_sane -> -a_insane.
+a_doctor -> -a_patient.
+b_sane -> -b_insane.
+b_doctor -> -b_patient.
+
+%ce stim de la A
+a_sane -> b_insane.
+a_insane -> b_sane.
+
+%ce stim de la B
+b_sane -> a_doctor.
+b_insane -> a_patient.
+
+end_of_list.
+
+formulas(goals).
+
+%a trebuie scos afara din azi
+%n ambele cazuri nu este bun
+%(a_insane & a_doctor) | (a_sane & a_patient)
+
+end_of_list.
+

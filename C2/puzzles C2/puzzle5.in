@@ -1,0 +1,75 @@
+% Saved by Prover9-Mace4 Version 0.5, December 2007.
+
+set(ignore_option_dependencies). % GUI handles dependencies
+
+if(Prover9). % Options for Prover9
+  assign(max_seconds, 60).
+end_if.
+
+if(Mace4).   % Options for Mace4
+  assign(max_models, 2).
+  assign(max_seconds, 60).
+end_if.
+
+if(Prover9). % Additional input for Prover9
+% diurn: tot ce crede cat timp e treaz e adevarat; tot ce crede cat timp doarme e fals
+% nocturn: tot ce crede cat timp e treaz e fals; tot ce crede cat timp doarme e adevarat
+% dirunal, nocturnal, asleep, awake
+% Mr. Kulp = H; Mrs. Kulp = W
+end_if.
+
+formulas(assumptions).
+
+%diurn | nocturn | treaz | adormit
+
+hd_asleep | hd_awake | hn_asleep | hn_awake.
+bd_asleep | bd_awake | bn_asleep | bn_awake.
+
+%poate fi doar un tip
+
+hd_asleep -> -hd_awake & -hn_asleep & -hn_awake.
+hd_awake ->  -hn_asleep & -hn_awake.
+hn_asleep -> -hn_awake.
+
+bd_asleep -> -bd_awake & -bn_asleep & -bn_awake.
+bd_awake ->  -bn_asleep & -bn_awake.
+bn_asleep -> -bn_awake.
+
+%amandoi sunt diferiti, unul diurn si unul nocturn
+
+bd_asleep -> hn_awake | hn_asleep.
+bd_awake -> hn_awake | hn_asleep.
+bn_asleep -> hd_awake | hd_asleep.
+bn_awake -> hd_awake | hd_asleep.
+
+%wife -> both asleep or both awake
+%n_asleep & d_awake -> true
+
+bn_asleep -> hd_asleep.
+bd_awake -> hn_awake.
+
+%n_awake & d_asleep ->false
+
+bn_awake -> -hd_awake.
+bd_asleep -> -hn_asleep.
+
+%husband -> not both asleep or both awake
+%n_asleep & d_awake -> true
+
+hn_asleep -> bd_awake.
+hd_awake -> bn_asleep.
+
+%n_awake & d_asleep ->false
+
+hn_awake -> -bd_asleep.
+hd_asleep -> -bn_awake.
+
+end_of_list.
+
+formulas(goals).
+
+%sotia are dreptate 
+%amandoi awake sau amandoi asleep
+
+end_of_list.
+

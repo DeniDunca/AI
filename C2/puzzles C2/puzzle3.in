@@ -1,0 +1,56 @@
+% Saved by Prover9-Mace4 Version 0.5, December 2007.
+
+set(ignore_option_dependencies). % GUI handles dependencies
+
+if(Prover9). % Options for Prover9
+  assign(max_seconds, 60).
+end_if.
+
+if(Mace4).   % Options for Mace4
+  assign(max_models, 2).
+  assign(max_seconds, 60).
+end_if.
+
+if(Prover9). % Additional input for Prover9
+% diurn: tot ce crede cat timp e treaz e adevarat; tot ce crede cat timp doarme e fals
+% nocturn: tot ce crede cat timp e treaz e fals; tot ce crede cat timp doarme e adevarat
+% dirunal, nocturnal, asleep, awake
+% Mr. Kulp = H; Mrs. Kulp = W
+end_if.
+
+formulas(assumptions).
+
+%fiecare dintre james si smith pot fi
+%pacienti sau doctori, sane sau insane
+j_sane | j_insane.
+j_doctor | j_patient.
+s_sane | s_insane.
+s_doctor | s_patient.
+
+%trebuie sa fie doar de un singur tip
+j_sane -> -j_insane.
+j_doctor -> -j_patient.
+s_sane -> -s_insane.
+s_doctor -> -s_patient.
+
+%din spusele celor doi, unul este docturn si unul este pacient
+s_doctor -> j_patient.
+s_patient -> j_doctor.
+
+%ce aflam de la jones despre smith
+j_sane -> (s_doctor & s_sane) | (s_doctor & s_insane).
+j_insane -> (s_patient & s_sane) | (s_patient & s_insane).
+
+%ce aflam de la smith despre jones
+s_sane -> (j_patient & j_sane) | (j_patient & j_insane).
+s_insane -> (j_doctor & j_sane) | (j_doctor & j_insane).
+
+end_of_list.
+
+formulas(goals).
+
+%james este pacient sane sau james este doctor insane
+%(j_sane & j_patient) | (j_insane & j_doctor)
+
+end_of_list.
+
